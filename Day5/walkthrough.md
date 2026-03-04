@@ -51,3 +51,39 @@ function countFreshIngredients(input) {
     return ids.filter(id => isFresh(id, ranges)).length;
 }
 ```
+
+---
+
+## Part 2: Count All Fresh Ingredient IDs from Ranges
+
+### Goal
+Ignore the available ingredient IDs section. Count how many **unique** ingredient IDs are covered by the fresh ID ranges combined.
+
+### Logic
+1. Parse only the ranges section.
+2. Sort ranges by lower bound, then merge overlapping or adjacent ranges.
+3. For each merged range `[lo, hi]`, the count of covered IDs is `hi - lo + 1`.
+4. Sum counts across all merged ranges.
+
+### Example
+Ranges: `3-5`, `10-14`, `16-20`, `12-18`
+
+After merging: `3-5` (3 IDs), `10-20` (11 IDs) → **14 total**
+
+### Answer: 348548952146313
+
+### Code Snippet
+```javascript
+function countFreshIDs(ranges) {
+    const sorted = ranges.slice().sort((a, b) => a[0] - b[0]);
+    const merged = [];
+    for (const [lo, hi] of sorted) {
+        if (merged.length === 0 || lo > merged[merged.length - 1][1] + 1) {
+            merged.push([lo, hi]);
+        } else {
+            merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], hi);
+        }
+    }
+    return merged.reduce((sum, [lo, hi]) => sum + (hi - lo + 1), 0);
+}
+```
