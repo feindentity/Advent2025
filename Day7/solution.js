@@ -67,10 +67,56 @@ function solveManifold(input) {
     return hitSplitters.size;
 }
 
+// Part 2: count timelines under the many-worlds interpretation.
+// At each splitter the particle takes BOTH paths; f(r,c) = timelines produced
+// by a downward beam starting at (r,c). Memoised because multiple parent
+// beams can converge on the same origin, but each parent counts them independently.
+function solveTimelines(input) {
+    const lines = input.split(/\r?\n/);
+
+    while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
+        lines.pop();
+    }
+
+    const rows = lines.length;
+    const cols = lines[0].length;
+
+    let sRow = -1, sCol = -1;
+    outer:
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (lines[r][c] === 'S') { sRow = r; sCol = c; break outer; }
+        }
+    }
+
+    const memo = new Map();
+
+    function timelines(r, c) {
+        // A beam spawned outside the manifold horizontally exits immediately: 1 timeline.
+        if (c < 0 || c >= cols) return 1n;
+        const key = `${r},${c}`;
+        if (memo.has(key)) return memo.get(key);
+
+        let result = 1n; // default: exits the bottom without hitting a splitter
+        for (let nr = r; nr < rows; nr++) {
+            if (lines[nr][c] === '^') {
+                result = timelines(nr, c - 1) + timelines(nr, c + 1);
+                break;
+            }
+        }
+
+        memo.set(key, result);
+        return result;
+    }
+
+    return timelines(sRow, sCol);
+}
+
 if (require.main === module) {
     const inputPath = path.join(__dirname, 'input.txt');
     const input = fs.readFileSync(inputPath, 'utf8');
-    console.log(solveManifold(input));
+    console.log('Part 1:', solveManifold(input));
+    console.log('Part 2:', solveTimelines(input).toString());
 }
 
-module.exports = { solveManifold };
+module.exports = { solveManifold, solveTimelines };

@@ -1,4 +1,4 @@
-const { solveManifold } = require('./solution');
+const { solveManifold, solveTimelines } = require('./solution');
 
 function assertEqual(actual, expected, label) {
     if (actual === expected) {
@@ -89,5 +89,14 @@ const mergeViaChildren = `\
 // (4,5) -> hits (6,5). Split 5.
 // Total: 5
 assertEqual(solveManifold(mergeViaChildren), 5, 'merge: (4,3) deduped, total 5 splits');
+
+// --- Part 2 tests ---
+assertEqual(Number(solveTimelines(example)), 40, 'Part 2 example: 40 timelines');
+assertEqual(Number(solveTimelines(single)), 2,  'Part 2 single splitter: 2 timelines (left + right)');
+assertEqual(Number(solveTimelines(miss)),   1,  'Part 2 beam misses splitters: 1 timeline (exits)');
+
+// Three splitters all hit: root → left+right → each hits another splitter → each exits 2 ways
+// f(0,3)=f(2,2)+f(2,4); f(2,2)=f(4,1)+f(4,3)=1+1=2; f(2,4)=f(4,3)+f(4,5)=1+1=2; total=4
+assertEqual(Number(solveTimelines(twoLevel)), 4, 'Part 2 two-level: 4 timelines');
 
 console.log('\nAll tests completed.');
