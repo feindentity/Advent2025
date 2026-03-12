@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 32 – Counter Button</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a2e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      gap: 40px;
+    }
+
+    h1 {
+      color: #e0e0e0;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    #counter {
+      font-size: 6rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(72, 199, 116, 0.6);
+      min-width: 160px;
+      text-align: center;
+      transition: transform 0.1s ease;
+    }
+
+    #counter.bump {
+      transform: scale(1.2);
+    }
+
+    #btn {
+      background: #2ecc71;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 30px 80px;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(46, 204, 113, 0.45);
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      letter-spacing: 1px;
+    }
+
+    #btn:hover {
+      background: #27ae60;
+      box-shadow: 0 12px 32px rgba(46, 204, 113, 0.6);
+    }
+
+    #btn:active {
+      transform: scale(0.95);
+      background: #1e8449;
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    }
+
+    #reset {
+      background: transparent;
+      color: #888;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 8px 24px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    #reset:hover {
+      color: #e74c3c;
+      border-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Day 32 – Counter</h1>
+
+  <div id="counter">0</div>
+
+  <button id="btn">Click me!</button>
+
+  <button id="reset">Reset</button>
+
+  <script>
+    let count = 0;
+    const counterEl = document.getElementById('counter');
+    const btn = document.getElementById('btn');
+    const reset = document.getElementById('reset');
+
+    btn.addEventListener('click', () => {
+      count++;
+      counterEl.textContent = count;
+
+      // brief scale bump animation
+      counterEl.classList.remove('bump');
+      void counterEl.offsetWidth; // force reflow
+      counterEl.classList.add('bump');
+    });
+
+    counterEl.addEventListener('transitionend', () => {
+      counterEl.classList.remove('bump');
+    });
+
+    reset.addEventListener('click', () => {
+      count = 0;
+      counterEl.textContent = count;
+    });
+  </script>
+
+</body>
+</html>
